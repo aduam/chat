@@ -1,10 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { ChatApp } from './chat-app';
+import { AppRouter } from './router/app-router';
+import { SocketProvider } from './context/socket-context';
 import './index.css';
 
 ReactDOM.render(
-  <ChatApp />,
+  <SocketProvider>
+    <AppRouter />
+  </SocketProvider>,
   document.getElementById('root')
 );

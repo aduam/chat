@@ -1,10 +1,10 @@
 import { SocketProvider } from './context/socket-context';
-import { LoginPage } from './pages/login';
+import { AppRouter } from './router/app-router';
 
 export const ChatApp = () => {
   return (
     <SocketProvider>
-      <LoginPage />
+      <AppRouter />
     </SocketProvider>
   );
 };
