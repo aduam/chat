@@ -1,13 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Toaster } from 'react-hot-toast';
+import { BrowserRouter } from 'react-router-dom';
 
-import { AppRouter } from './router/app-router';
-import { SocketProvider } from './context/socket-context';
+import { ChatApp } from './chat-app';
 import './index.css';
 
 ReactDOM.render(
-  <SocketProvider>
-    <AppRouter />
-  </SocketProvider>,
+  <BrowserRouter>
+    <ChatApp />
+    <Toaster />
+  </BrowserRouter>,
   document.getElementById('root')
 );

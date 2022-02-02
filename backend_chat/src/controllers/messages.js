@@ -5,12 +5,10 @@ const messages = async (req, res) => {
   const { uid } = req;
 
   const last30 = await Message.find({
-    $of: [
-      { from: uid, to: from },
-      { from, to: uid },
-    ],
+    from: { $in: [uid, from] },
+    to: { $in: [uid, from] },
   })
-    .sort({ createdAt: 'desc' })
+    .sort({ createdAt: 'asc' })
     .limit(30);
 
   res.json({
@@ -21,4 +19,18 @@ const messages = async (req, res) => {
   });
 };
 
-module.exports = { messages };
+const recordMessage = async (payload) => {
+  try {
+    const msg = await Message.create({ ...payload });
+    await msg.save();
+    return msg;
+  } catch (error) {
+    console.log(error);
+    return false
+  }
+};
+
+module.exports = {
+  messages,
+  recordMessage,
+};

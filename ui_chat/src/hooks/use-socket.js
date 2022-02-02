@@ -1,24 +1,40 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import io from 'socket.io-client';
 
 export const useSocket = (serverPath) => {
-  const socket = useMemo(() => {
-    return io.connect(serverPath, { transports: ['websocket'] });
-  }, [serverPath]);
+  const [socket, setSocket] = useState(null);
   const [isOnline, setIsOnline] = useState(false);
 
-  useEffect(() => {
-    setIsOnline(socket.connected);
+  const socketConnect = useCallback(() => {
+    const token = localStorage.getItem('token');
+    const socketTemp = io.connect(
+      serverPath,
+      { transports: ['websocket'],
+      autoConnect: true,
+      forceNew: true,
+      query: {
+        'x-token': token,
+      }
+    });
+    setSocket(socketTemp);
+  }, [serverPath]);
+
+  const socketDisconnect = useCallback(() => {
+    socket?.disconnect();
   }, [socket]);
 
   useEffect(() => {
-    socket.on('connect', () => {
+    setIsOnline(socket?.connected);
+  }, [socket]);
+
+  useEffect(() => {
+    socket?.on('connect', () => {
       setIsOnline(true);
     });
   }, [socket]);
 
   useEffect(() => {
-    socket.on('disconnect', () => {
+    socket?.on('disconnect', () => {
       setIsOnline(false);
     });
   }, [socket]);
@@ -26,5 +42,7 @@ export const useSocket = (serverPath) => {
   return {
     isOnline,
     socket,
+    socketConnect,
+    socketDisconnect,
   };
 };
